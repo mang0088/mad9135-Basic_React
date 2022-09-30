@@ -1,23 +1,45 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import Header from './components/Header/Header';
+import Main from './components/Main/Main';
 
 function App() {
+  const [searchValue, setSearchValue] = useState('');
+  const [user, setUser] = useState([]);
+
+  //runs for the first time always
+  useEffect(() => {
+    if (searchValue) {
+      doFetch(searchValue);
+    }
+  }, [searchValue]); //not set, value itself
+
+  async function doFetch(searchValue) {
+    const resp = await fetch(
+      `https://api.github.com/search/users?q=${searchValue}&per_page=5`
+    );
+    if (!resp.ok) throw new Error(resp.statusText);
+    let data = await resp.json();
+    setUser(data.items);
+    console.log(data);
+  }
+
+  function handleSubmit(ev) {
+    ev.preventDefault(); //important
+    console.log(ev);
+    setSearchValue(ev.target[0].value); //grabbing input[0]. NOT button[1] (from below in form)
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <form className="inputForm" onSubmit={handleSubmit}>
+        <input className="searchBox" type="text" />
+        <button className="custom-btn btn-1" type="submit">
+          Search
+        </button>
+      </form>
+      <Main user={user} />
     </div>
   );
 }
