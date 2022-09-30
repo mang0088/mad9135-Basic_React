@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import '../Card/Card.css';
+import '../Card/Modal.css';
 // import { useState } from 'react';
-import Modal from 'react-model';
+import ReactModal from 'react-modal';
 
-Modal.setAppElement('#root');
+// Modal.setAppElement('#root');
 
 function Card({ item }) {
   let userAvatar = item.avatar_url;
@@ -39,9 +40,30 @@ function Card({ item }) {
         </div>
       </div>
 
-      <Modal isOpen={modalOpen}>
-        <p>hi this is modal</p>
-      </Modal>
+      <ReactModal isOpen={modalOpen}>
+        <div className="modalBackground">
+          <div className="modalContainer">
+            <div className="titleCloseBtn">
+              <button
+                onClick={() => {
+                  setModalOpen(false);
+                }}
+              >
+                X
+              </button>
+            </div>
+            <div className="title">
+              <h1>{userName}</h1>
+            </div>
+            <div className="body">
+              <img src={userName} alt={userId}></img>
+              <p>{item.following}</p>
+              <p>{item.followers}</p>
+            </div>
+            <div className="footer"></div>
+          </div>
+        </div>
+      </ReactModal>
     </div>
   );
 }
