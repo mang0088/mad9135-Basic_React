@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import '../Card/Card.css';
-import '../Card/Modal.css';
-// import { useState } from 'react';
+
 import ReactModal from 'react-modal';
 
-// Modal.setAppElement('#root');
+ReactModal.setAppElement('#root');
 
 function Card({ item }) {
   let userAvatar = item.avatar_url;
@@ -13,12 +12,12 @@ function Card({ item }) {
 
   const [modelUser, setModelUser] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-
+  console.log(modelUser);
   async function handlModel(ev) {
     const resp = await fetch(`https://api.github.com/users/${userName}`);
     if (!resp.ok) throw new Error(resp.statusText);
     let modelData = await resp.json();
-    setModelUser(modelData.items);
+    setModelUser(modelData);
     console.log(modelData);
     setModalOpen(true);
   }
@@ -41,26 +40,36 @@ function Card({ item }) {
       </div>
 
       <ReactModal isOpen={modalOpen}>
-        <div className="modalBackground">
-          <div className="modalContainer">
-            <div className="titleCloseBtn">
-              <button
-                onClick={() => {
-                  setModalOpen(false);
-                }}
-              >
-                X
-              </button>
-            </div>
-            <div className="title">
-              <h1>{userName}</h1>
-            </div>
-            <div className="body">
-              <img src={userName} alt={userId}></img>
-              <p>{item.following}</p>
-              <p>{item.followers}</p>
-            </div>
-            <div className="footer"></div>
+        <div className="modalContainer">
+          <div className="title">
+            <h1>{modelUser.name}</h1>
+          </div>
+          <div className="bodyModel">
+            <img src={userAvatar} alt={userId}></img>
+            <p>{modelUser.bio}</p>
+            <p>
+              {' '}
+              <span>Company: </span> {modelUser.company}
+            </p>
+            <p>
+              {' '}
+              <span>Followers: </span> {modelUser.followers}
+            </p>
+            <p>
+              {' '}
+              <span>Following: </span>
+              {modelUser.following}
+            </p>
+          </div>
+          <div className="titleCloseBtn">
+            <button
+              className="closeBtn"
+              onClick={() => {
+                setModalOpen(false);
+              }}
+            >
+              Close
+            </button>
           </div>
         </div>
       </ReactModal>
